@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const AWS = require('aws-sdk');
 const uuid = require('uuid');
+const probe = require('probe-image-size');
 const hashUtil = require('../util/hash');
 const queries = require('../../db/queries/project');
 const imageQueries = require('../../db/queries/image');
@@ -29,7 +30,9 @@ async function upload(req, res, next) {
                 created_by: req.user.id,
                 sha_256: image.sha_256,
                 banned: false,
-                validated: false
+                validated: false,
+                height: image.height,
+                width: image.width
             }
         });
 
@@ -63,11 +66,32 @@ async function uploadAllImages(req) {
                 await Promise.all(files.null.map(async (file) => {
                     const response = await uploadImageS3(file, req.params.id);
                     response.sha_256 = await hashUtil.createHashFromFile(file.path);
+
+                    const imageProperties = await getImageProperties(file.path);
+                    response.width = imageProperties.width;
+                    response.height = imageProperties.height;
+
                     images.push(response);
                 }));
 
                 resolve(images);
             });
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+async function getImageProperties(filePath) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const image = fs.createReadStream(filePath);
+
+            const properties = await probe(image);
+            console.log(properties);
+            
+
+            resolve({ width: properties.width, height: properties.height });
         } catch (error) {
             reject(error);
         }
