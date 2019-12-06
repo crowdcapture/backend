@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  cc-backend:
+    build: .
+    volumes:
+      - .:/usr/src/app
+    working_dir: /usr/src/app
+    ports:
+      - 3000:3000
+      - 9229:9229
+    command: npm start
+    container_name: cc-backend
+    networks:
+      - app-network
+  cc-database:
+    image: postgres:11-alpine
+    environment:
+      - POSTGRES_PASSWORD=local
+      - POSTGRES_USER=pcmill
+      - POSTGRES_DB=crowdcapture
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    container_name: cc-database
+    networks:
+      - app-network
+
+volumes:
+  dbdata:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
