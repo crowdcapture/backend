@@ -1,7 +1,7 @@
 {
   "name": "crowdcapture",
   "version": "1.0.0",
-  "description": "Help create usefull datasets.",
+  "description": "Help create useful datasets.",
   "main": "index.js",
   "scripts": {
     "start": "nodemon -L src/index.js",
@@ -12,7 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "aws-s3": "^2.0.5",
-    "aws-sdk": "^2.562.0",
+    "aws-sdk": "^2.585.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
@@ -21,14 +21,14 @@
     "email-validator": "^2.0.4",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "knex": "^0.20.1",
+    "knex": "^0.20.3",
     "memory-cache": "^0.2.0",
     "multiparty": "^4.2.1",
     "node-mailjet": "^3.3.1",
-    "pg": "^7.12.1",
+    "pg": "^7.14.0",
     "probe-image-size": "^5.0.0",
     "request": "^2.88.0",
-    "request-promise-native": "^1.0.7",
+    "request-promise-native": "^1.0.8",
     "rimraf": "^3.0.0",
     "uuid": "^3.3.3"
   },
