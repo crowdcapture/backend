@@ -3,7 +3,7 @@ const secretkey = process.env.MJ_SECRETKEY;
 
 const mailjet = require('node-mailjet').connect(apikey, secretkey);
 
-async function sendConfirmationEmail (url, email, token) {
+async function sendConfirmationEmail (url, email, token, username) {
     return new Promise(async (resolve, reject) => {
         try {
             if (!process.env.MJ_SEND_EMAIL || process.env.NODE_ENV === 'test') {
@@ -30,7 +30,8 @@ async function sendConfirmationEmail (url, email, token) {
                             "TemplateLanguage": true,
                             "Subject": "CrowdCapture registration",
                             "Variables": {
-                                "confirmation_link": sendUrl
+                                "confirmation_link": sendUrl,
+                                "username": username
                             }
                         }]
                     });

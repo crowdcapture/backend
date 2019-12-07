@@ -90,7 +90,7 @@ async function insertUser(email, username, password) {
 
             await queries.insertUserValidation(user_validation);
 
-            await emailUtil.sendConfirmationEmail('https://crowdcapture.org', user.email, user_validation.validation_token);
+            await emailUtil.sendConfirmationEmail('https://crowdcapture.org', user.email, user_validation.validation_token, user.username);
 
             resolve(user_id[0]);
         } catch (error) {
