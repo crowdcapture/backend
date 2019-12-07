@@ -88,8 +88,6 @@ async function getImageProperties(filePath) {
             const image = fs.createReadStream(filePath);
 
             const properties = await probe(image);
-            console.log(properties);
-            
 
             resolve({ width: properties.width, height: properties.height });
         } catch (error) {

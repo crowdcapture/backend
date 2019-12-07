@@ -5,8 +5,7 @@ async function confirmation(req, res, next) {
         await security(req.body.token);
         
         const user_validation = await queries.getUserWithToken(req.body.token);
-        console.log(user_validation);
-        
+
         await checkToken(user_validation);
 
         const user = await queries.getUserWithId(user_validation[0].user);
