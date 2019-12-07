@@ -5,6 +5,7 @@ const fs = require('fs');
 const AWS = require('aws-sdk');
 const uuid = require('uuid');
 const probe = require('probe-image-size');
+
 const hashUtil = require('../util/hash');
 const queries = require('../../db/queries/project');
 const imageQueries = require('../../db/queries/image');
@@ -37,6 +38,7 @@ async function upload(req, res, next) {
         });
 
         await imageQueries.insertImages(imagesDb);
+        await updateProject(project, imagesDb);
 
         res.status(200);
         res.send({
@@ -46,6 +48,20 @@ async function upload(req, res, next) {
     } catch (error) {
         next(error);
     }
+}
+
+async function updateProject(project, images) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await queries.updateProject({
+                image_count: project[0].image_count + images.length
+            }, project[0].id);
+
+            resolve();
+        } catch (error) {
+            reject(error);
+        }
+    });
 }
 
 async function uploadAllImages(req) {
