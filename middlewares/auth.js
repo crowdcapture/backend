@@ -5,7 +5,7 @@ const queries = require('../db/queries/user');
 module.exports = async function (req, res, next) {
     const token = req.headers["x-access-token"];
 
-    if (!token) return res.status(401).send({success: false, errorCode: 1001, message: 'Access denied.'});
+    if (!token) return res.status(401).send({ success: false, errorCode: 1001, message: 'Access denied.' });
 
     try {
         const decoded = jwt.verify(token, jwt_secret);
@@ -19,10 +19,7 @@ module.exports = async function (req, res, next) {
             throw new Error('This user does not exist.');
         }
 
-        // Check for use of old or stolen tokens.
-        if (user[0].token != token) {
-            throw new Error('This token does not exist in db.');
-        }
+        // TODO check for tokens in the blacklist
 
         next();
     } catch (error) {
