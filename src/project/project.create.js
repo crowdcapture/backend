@@ -1,5 +1,6 @@
 const queries = require('../../db/queries/project');
 const uuid = require('uuid');
+const cache = require('memory-cache');
 
 async function createProject(req, res, next) {
     if (!req.body || !req.body.title) {
@@ -25,6 +26,9 @@ async function createProject(req, res, next) {
         }
 
         await queries.insertProject(project);
+
+        // Remove the projects cache as it is now not up to date anymore.
+        cache.del('projects');
 
         res.status(200);
         res.send({

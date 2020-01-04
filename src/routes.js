@@ -5,6 +5,7 @@ const auth = require('../middlewares/auth');
 const projectCreate = require('./project/project.create');
 const projectUpdate = require('./project/project.update');
 const projectGet = require('./project/project.get');
+const projectsGet = require('./project/projects.get');
 const upload = require('./image/upload');
 const validate = require('./image/validate');
 const login = require('./user/login');
@@ -36,6 +37,10 @@ router.post('/password', (req, res, next) => {
 
 router.get('/project/:id', (req, res, next) => {
     projectGet(req, res, next);
+});
+
+router.get('/projects', (req, res, next) => {
+    projectsGet(req, res, next);
 });
 
 // Authenticated routes

@@ -21,8 +21,18 @@ function getProject(project_id) {
         });
 }
 
+function getProjects() {
+    return knex.select('project.id', 'title', 'image_count', 'created_by', 'user.username').from('project')
+        .where({
+            'project.banned': false
+        })
+        .innerJoin('user', 'project.created_by', 'user.id')
+        .orderBy('image_count');
+}
+
 module.exports = {
     insertProject: insertProject,
     updateProject: updateProject,
-    getProject: getProject
+    getProject: getProject,
+    getProjects: getProjects
 };
