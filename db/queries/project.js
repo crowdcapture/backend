@@ -30,9 +30,20 @@ function getProjects() {
         .orderBy('image_count');
 }
 
+function getMyProjects(user_id) {
+    return knex.select('project.id', 'title', 'image_count', 'created_by', 'user.username').from('project')
+        .where({
+            'project.banned': false,
+            created_by: user_id
+        })
+        .innerJoin('user', 'project.created_by', 'user.id')
+        .orderBy('image_count');
+}
+
 module.exports = {
     insertProject: insertProject,
     updateProject: updateProject,
     getProject: getProject,
-    getProjects: getProjects
+    getProjects: getProjects,
+    getMyProjects: getMyProjects
 };
