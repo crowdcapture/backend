@@ -2,7 +2,9 @@ version: '3'
 
 services:
   cc-backend:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileDev
     volumes:
       - .:/usr/src/app
     working_dir: /usr/src/app

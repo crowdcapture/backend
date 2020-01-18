@@ -17,7 +17,7 @@ const reset = require('./user/reset');
 const password = require('./user/password');
 
 router.get('/test', (req, res, next) => {
-    res.send('Your test message was noted and discarded.');
+    res.send('Your test request was noted and discarded.');
 });
 
 router.post('/login', (req, res, next) => {
