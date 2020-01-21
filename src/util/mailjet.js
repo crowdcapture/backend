@@ -9,7 +9,7 @@ async function sendConfirmationEmail (url, email, token, username) {
             if (!process.env.MJ_SEND_EMAIL || process.env.NODE_ENV === 'test') {
                 resolve();
             } else {
-                const sendUrl = url + '/auth/confirmation/' + token;
+                const sendUrl = url + '/confirmation/' + token;
                 
                 await mailjet
                     .post("send", {
@@ -50,7 +50,7 @@ async function sendResetEmail (url, email, token, username) {
             if(!process.env.MJ_SEND_EMAIL || process.env.NODE_ENV === 'test') {
                 resolve();
             } else {
-                const sendUrl = url + '/reset/' + token;
+                const sendUrl = url + '/password/' + token;
                 
                 await mailjet
                     .post("send", {
