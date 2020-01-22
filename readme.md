@@ -4,7 +4,7 @@
 
 This is the NodeJS code that runs the backend of CrowdCapture.
 
-To run this code locally you can run `docker-compose build` and `docker-compose up`. This will start the NodeJS process and a Postgress Database. 
+To run this code locally you can run `docker-compose build` and `docker-compose up`. This will start the NodeJS process and a Postgress Database.
 
 ## Environment Variables
 The following list of environment variables should be set in a .env file.
