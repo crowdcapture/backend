@@ -1,4 +1,5 @@
-// Update with your config settings.
+const fs = require('fs');
+
 require('dotenv').config();
 
 module.exports = {
@@ -8,7 +9,11 @@ module.exports = {
       database: process.env.POSTGRES_DB,
       user: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
-      host: 'cc-database'
+      host: process.env.POSTGRES_HOST,
+      port: process.env.POSTGRES_PORT,
+      ssl: {
+        ca: fs.readFileSync('./ca-certificate.crt').toString()
+      }
     },
     migrations: {
       directory: __dirname + '/db/migrations'
@@ -22,7 +27,12 @@ module.exports = {
     connection: {
       database: process.env.POSTGRES_DB,
       user: process.env.POSTGRES_USER,
-      password: process.env.POSTGRES_PASSWORD
+      password: process.env.POSTGRES_PASSWORD,
+      host: process.env.POSTGRES_HOST,
+      port: process.env.POSTGRES_PORT,
+      ssl: {
+        ca: fs.readFileSync('./ca-certificate.crt').toString()
+      }
     },
     migrations: {
       directory: __dirname + '/db/migrations'
@@ -37,7 +47,11 @@ module.exports = {
       database: process.env.POSTGRES_DB,
       user: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
-      host: process.env.POSTGRES_HOST
+      host: process.env.POSTGRES_HOST,
+      port: process.env.POSTGRES_PORT,
+      ssl: {
+        ca: fs.readFileSync('./ca-certificate.crt').toString()
+      }
     },
     migrations: {
       directory: __dirname + '/db/migrations'

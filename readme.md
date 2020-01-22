@@ -16,6 +16,8 @@ The following list of environment variables should be set in a .env file.
 - POSTGRES_PASSWORD
 - POSTGRES_USER
 - POSTGRES_DB
+- POSTGRES_HOST
+- POSTGRES_PORT
 - MJ_APIKEY
 - MJ_SECRETKEY
 - MJ_SEND_EMAIL=true
