@@ -25,7 +25,7 @@ async function getProject(req, res, next) {
         }
 
         res.status(200);
-        res.send({success: true, project: project});
+        res.send({success: true, project: project[0]});
     } catch (error) {
         next(error);
     }

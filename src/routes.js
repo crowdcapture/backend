@@ -7,6 +7,7 @@ const projectUpdate = require('./project/project.update');
 const projectGet = require('./project/project.get');
 const projectsGet = require('./project/projects.get');
 const projectsGetMy = require('./project/projects.my.get');
+const images = require('./image/images.get');
 const upload = require('./image/upload');
 const validate = require('./image/validate');
 const login = require('./user/login');
@@ -42,6 +43,10 @@ router.post('/password', (req, res, next) => {
 
 router.get('/project/:id', (req, res, next) => {
     projectGet(req, res, next);
+});
+
+router.get('/images/:id', (req, res, next) => {
+    images(req, res, next);
 });
 
 router.get('/projects', (req, res, next) => {

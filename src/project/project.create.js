@@ -13,7 +13,7 @@ async function createProject(req, res, next) {
             throw { success: false, message: 'The maximum length of the project title is 64 characters.' };
         }
 
-        if (req.body.description.length > 3500) {
+        if (req.body.description.length > 1000) {
             throw { success: false, message: 'The maximum length of the project description is 3500 characters.' };
         }
 

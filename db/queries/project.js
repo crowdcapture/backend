@@ -15,10 +15,11 @@ function updateProject(project, project_id) {
 }
 
 function getProject(project_id) {
-    return knex('project')
+    return knex.select('project.id', 'latest_bundle_url', 'title', 'description', 'created_by', 'user.username').from('project')
         .where({
-            id: project_id
-        });
+            'project.id': project_id
+        })
+        .innerJoin('user', 'project.created_by', 'user.id');
 }
 
 function getProjects() {

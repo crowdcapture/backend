@@ -12,7 +12,31 @@ function getImage(image_id) {
         .where({ id: image_id });
 }
 
+function getImages(project_id) {
+    return knex.raw(`SELECT id, filename, url FROM image WHERE "project" = '${project_id}' AND random() < 0.01 limit 15;`);
+}
+
+function getImagesValidated(project_id) {
+    return knex('image')
+        .count()
+        .where({
+            project: project_id,
+            validated: true
+        });
+}
+
+function getImagesTotal(project_id) {
+    return knex('image')
+        .count()
+        .where({
+            project: project_id
+        });
+}
+
 module.exports = {
     insertImages,
-    getImage
+    getImage,
+    getImages,
+    getImagesTotal,
+    getImagesValidated
 }
