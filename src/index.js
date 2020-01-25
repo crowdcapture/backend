@@ -31,6 +31,12 @@ app.use('/v1', routes);
 
 app.use(sentry.Handlers.errorHandler());
 
+// Error handler
+app.use(function (err, req, res, next) {
+  // render the error page
+  res.status(err.status || 500).send(err);
+});
+
 // Start our server
 // When unit tests are running they stop and start the server themselves
 // or else they give a port used error.

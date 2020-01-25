@@ -45,7 +45,7 @@ async function createHash(data) {
                 hash.update(data);
                 hashedData = hash.digest('hex');
             } catch (error) {
-                console.log(error);
+                reject({success: false, message: 'Hashing failed', error: error});
             }
 
             resolve(hashedData);

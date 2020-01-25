@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const AWS = require('aws-sdk');
 const uuid = require('uuid');
+const uuidUtil = require('../util/uuid');
 const probe = require('probe-image-size');
 
 const hashUtil = require('../util/hash');
@@ -12,6 +13,10 @@ const imageQueries = require('../../db/queries/image');
 
 async function upload(req, res, next) {
     try {
+        if (!uuidUtil.uuidValidator(req.params.id)) {
+            throw({ success: false, status: 400, message: 'ID should be a valid UUID.' });
+        }
+
         // Check if the project exists
         const project = await queries.getProject(req.params.id);
 

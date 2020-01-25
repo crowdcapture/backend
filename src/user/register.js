@@ -22,8 +22,6 @@ async function register(req, res, next) {
             message: 'User created.'
         });
     } catch (error) {
-        console.log(error);
-        
         next(error);
     }
 }

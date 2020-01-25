@@ -1,10 +1,15 @@
 const queries = require('../../db/queries/project');
 const cache = require('memory-cache');
+const uuidUtil = require('../util/uuid');
 
 async function updateProject(req, res, next) {
     try {
         if (!req.body || !req.body.title || !req.body.id) {
             throw({ success: false, status: 400, message: 'Some required properties where not set' });
+        }
+
+        if (!uuidUtil.uuidValidator(req.params.id)) {
+            throw({ success: false, status: 400, message: 'ID should be a valid UUID.' });
         }
 
         if (req.body.title.length > 64) {

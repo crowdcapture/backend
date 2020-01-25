@@ -1,9 +1,14 @@
 const uuid = require('uuid');
+const uuidUtil = require('../util/uuid');
 const imageQueries = require('../../db/queries/image');
 const queries = require('../../db/queries/validation');
 
 async function validate(req, res, next) {
     try {
+        if (!uuidUtil.uuidValidator(req.params.id)) {
+            throw({ success: false, status: 400, message: 'ID should be a valid UUID.' });
+        }
+
         // Check if the image exists
         const image = await imageQueries.getImage(req.params.id);
 

@@ -1,10 +1,15 @@
 const queries = require('../../db/queries/image');
 const projectQueries = require('../../db/queries/project');
+const uuidUtil = require('../util/uuid');
 
 async function getImages(req, res, next) {
     try {
         if (!req.params.id) {
             throw({ success: false, status: 400, message: 'Some required properties where not set' });
+        }
+
+        if (!uuidUtil.uuidValidator(req.params.id)) {
+            throw({ success: false, status: 400, message: 'ID should be a valid UUID.' });
         }
 
         // Check if the project exists
