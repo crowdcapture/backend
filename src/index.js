@@ -11,6 +11,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 sentry.init({ dsn: process.env.SENTRY_KEY });
 
+app.use(sentry.Handlers.requestHandler());
+
 const port = process.env.PORT || 5000;
 const routes = require('./routes');
 
