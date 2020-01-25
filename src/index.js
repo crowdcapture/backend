@@ -1,7 +1,9 @@
+// process.env.NODE_ENV = 'development';
+
 const dotenv = require('dotenv');
-const sentry = require('@sentry/node');
 const express = require('express');
 const app = express();
+const sentry = require('@sentry/node');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
@@ -27,15 +29,7 @@ app.disable('x-powered-by');
 // Make the routes and let them react on /v1
 app.use('/v1', routes);
 
-// Error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500).send(err);
-});
+app.use(sentry.Handlers.errorHandler());
 
 // Start our server
 // When unit tests are running they stop and start the server themselves
