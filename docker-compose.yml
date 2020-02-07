@@ -15,23 +15,8 @@ services:
     container_name: cc-backend
     networks:
       - app-network
-  cc-database:
-    image: postgres:11-alpine
-    environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_DB=${POSTGRES_DB}
-    volumes:
-      - dbdata:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
-    container_name: cc-database
-    networks:
-      - app-network
-
-volumes:
-  dbdata:
-    driver: local
+    env_file:
+      - .env
 
 networks:
   app-network:

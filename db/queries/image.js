@@ -13,7 +13,7 @@ function getImage(image_id) {
 }
 
 function getImages(project_id) {
-    return knex.raw(`SELECT id, filename, url FROM image WHERE "project" = '${project_id}' AND random() < 0.01 limit 15;`);
+    return knex.raw(`SELECT id, filename, url FROM image WHERE "project" = '${project_id}' AND "banned" = false ORDER BY random() limit 15;`);
 }
 
 function getImagesValidated(project_id) {
@@ -21,6 +21,7 @@ function getImagesValidated(project_id) {
         .count()
         .where({
             project: project_id,
+            banned: false,
             validated: true
         });
 }
@@ -29,6 +30,7 @@ function getImagesTotal(project_id) {
     return knex('image')
         .count()
         .where({
+            banned: false,
             project: project_id
         });
 }

@@ -5,6 +5,8 @@ const queries = require('../db/queries/user');
 module.exports = async function (req, res, next) {
     const token = req.headers["x-access-token"];
 
+    if (!jwt_secret) return res.status(500).send({ success: false, message: 'JwtSecret not set. '});
+
     if (!token) return res.status(401).send({ success: false, errorCode: 1001, message: 'Access denied.' });
 
     try {

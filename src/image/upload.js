@@ -84,7 +84,11 @@ async function uploadAllImages(req) {
                     return;
                 }
 
-                await Promise.all(files.null.map(async (file) => {
+                if (!files.fileArray) {
+                    reject({ success: false, message: 'Files are not structured in an expected way.'});
+                }
+
+                await Promise.all(files.fileArray.map(async (file) => {
                     const response = await uploadImageS3(file, req.params.id);
                     response.sha_256 = await hashUtil.createHashFromFile(file.path);
 
@@ -165,7 +169,7 @@ async function checkBucket(project_id) {
                     await S3.createBucket(params).promise();
                     resolve();
                 } else {
-                    throw({ success: false, message: 'Could not make the required bucket' });
+                    reject({ success: false, message: 'Could not make the required bucket' });
                 }
             }
         } catch (error) {
