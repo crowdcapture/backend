@@ -26,11 +26,13 @@ async function validate(req, res, next) {
             throw({ success: false, status: 400, message: 'This image has already been validated'});
         }
 
-        // Check if rejection reason exists
-        const reason = await queries.getRejectionReason(req.body.rejection_reason);
-
-        if (reason.length === 0) {
-            throw({ success: false, status: 400, message: 'This id does not seem to exist' });
+        if (req.body.rejected) {
+            // Check if rejection reason exists
+            const reason = await queries.getRejectionReason(req.body.rejection_reason);
+    
+            if (reason.length === 0) {
+                throw({ success: false, status: 400, message: 'This id does not seem to exist' });
+            }
         }
 
         const validation = {
@@ -42,6 +44,14 @@ async function validate(req, res, next) {
         };
 
         await queries.insertValidation(validation);
+
+        const imageInfo = {
+            validated: true,
+            validated_on: new Date(),
+            validating: null
+        }
+
+        await queries.updateImage(req.params.id, imageInfo);
 
         res.status(200);
         res.send({
