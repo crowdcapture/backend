@@ -22,7 +22,7 @@
     "email-validator": "^2.0.4",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "knex": "^0.20.8",
+    "knex": "^0.20.9",
     "memory-cache": "^0.2.0",
     "multiparty": "^4.2.1",
     "node-mailjet": "^3.3.1",

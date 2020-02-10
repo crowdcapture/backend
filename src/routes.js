@@ -17,6 +17,7 @@ const register = require('./user/register');
 const confirmation = require('./user/confirmation');
 const reset = require('./user/reset');
 const password = require('./user/password');
+const search = require('./project/project.search');
 
 router.get('/test', (req, res, next) => {
     res.send('Your test request was noted and discarded.');
@@ -56,6 +57,10 @@ router.get('/projects', (req, res, next) => {
 
 router.get('/reasons', (req, res, next) => {
     reasonsGet(req, res, next);
+});
+
+router.post('/search', (req, res, next) => {
+    search(req, res, next);
 });
 
 // Authenticated routes

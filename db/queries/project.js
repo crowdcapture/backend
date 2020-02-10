@@ -41,10 +41,15 @@ function getMyProjects(user_id) {
         .orderBy('image_count');
 }
 
+function search(query) {
+    return knex.raw(`SELECT id, title FROM project WHERE banned = false AND to_tsvector(title || ' ' || description) @@ to_tsquery(?) LIMIT 20`, [query]);
+}
+
 module.exports = {
     insertProject: insertProject,
     updateProject: updateProject,
     getProject: getProject,
     getProjects: getProjects,
-    getMyProjects: getMyProjects
+    getMyProjects: getMyProjects,
+    search
 };
