@@ -16,6 +16,14 @@ function getImages(project_id) {
     return knex.raw(`SELECT id, filename, url FROM image WHERE "project" = '${project_id}' AND "banned" = false ORDER BY random() limit 15;`);
 }
 
+function getImageBySHA(sha_256, project_id) {
+    return knex('image')
+        .where({
+            project: project_id,
+            sha_256: sha_256
+        });
+}
+
 function getImagesValidated(project_id) {
     return knex('image')
         .count()
@@ -38,6 +46,7 @@ function getImagesTotal(project_id) {
 module.exports = {
     insertImages,
     getImage,
+    getImageBySHA,
     getImages,
     getImagesTotal,
     getImagesValidated

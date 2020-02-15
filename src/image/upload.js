@@ -90,10 +90,19 @@ async function uploadAllImages(req) {
                 }
 
                 await Promise.all(files.fileArray.map(async (file) => {
-                    const response = await uploadImageS3(file, req.params.id);
-                    response.sha_256 = await hashUtil.createHashFromFile(file.path);
+                    // Check if an image with this sha_256 already exists (in this project)
+                    const sha_256 = await hashUtil.createHashFromFile(file.path);
 
+                    const shaResult = await imageQueries.getImageBySHA(sha_256, req.params.id);
+
+                    if (shaResult.length > 0) {
+                        reject({ success: false, status: 400, message: 'This image was already uploaded to this project.'});
+                    }
+
+                    const response = await uploadImageS3(file, req.params.id);
                     const imageProperties = await getImageProperties(file.path);
+
+                    response.sha_256 = sha_256;
                     response.width = imageProperties.width;
                     response.height = imageProperties.height;
 
