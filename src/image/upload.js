@@ -132,7 +132,7 @@ async function uploadImageS3(fileObject, project_id) {
                 secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
             });
 
-            const filename = crypto.randomBytes(8).toString('hex');
+            const filename = crypto.randomBytes(Math.ceil(16 * 0.75)).toString('base64').slice(0, 16);
             const file = fs.createReadStream(fileObject.path);
 
             const params = {
