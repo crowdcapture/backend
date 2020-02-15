@@ -29,8 +29,8 @@ async function upload(req, res, next) {
         const imagesDb = images.map((image) => {
             return {
                 id: uuid.v4(),
-                filename: image.Key,
-                url: image.Location,
+                filename: image.filename,
+                url: `https://${process.env.AWS_S3_BUCKET_NAME}.${process.env.AWS_ENDPOINT}/${image.Key}`,
                 project: req.params.id,
                 created: new Date(),
                 created_by: req.user.id,
@@ -124,17 +124,19 @@ async function getImageProperties(filePath) {
 async function uploadImageS3(fileObject, project_id) {
     return new Promise(async (resolve, reject) => {
         try {
-            const S3 = new AWS.S3();
-
-            // Create project bucket if it does not exists yet.
-            await checkBucket(project_id);
+            const endpoint = new AWS.Endpoint(process.env.AWS_ENDPOINT);
+            const S3 = new AWS.S3({
+                endpoint: endpoint,
+                accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+                secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+            });
 
             const filename = crypto.randomBytes(8).toString('hex');
             const file = fs.createReadStream(fileObject.path);
 
             const params = {
-                Bucket: project_id,
-                Key: filename + path.extname(fileObject.path).toLowerCase(),
+                Bucket: process.env.AWS_S3_BUCKET_NAME,
+                Key: `${project_id}/${filename}${path.extname(fileObject.path).toLowerCase()}`,
                 Body: file,
                 ACL: 'public-read'
             };
@@ -143,35 +145,11 @@ async function uploadImageS3(fileObject, project_id) {
                 if (err) {
                     reject({ success: false, message: 'There was a problem with S3 Upload' });
                 } else {
+                    data.filename = filename;
+
                     resolve(data);
                 }
             });
-        } catch (error) {
-            reject(error);
-        }
-    });
-}
-
-async function checkBucket(project_id) {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const S3 = new AWS.S3();
-            const params = {
-                Bucket: project_id
-            }
-
-            try {
-                await S3.headBucket(params).promise();
-
-                resolve();
-            } catch (error) {
-                if (error.statusCode === 404) {
-                    await S3.createBucket(params).promise();
-                    resolve();
-                } else {
-                    reject({ success: false, message: 'Could not make the required bucket' });
-                }
-            }
         } catch (error) {
             reject(error);
         }

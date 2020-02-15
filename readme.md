@@ -10,7 +10,7 @@ To run this code locally you can run `docker-compose build` and `docker-compose 
 The following list of environment variables should be set in a .env file.
 
 - AWS_ACCESS_KEY_ID
-- AWS_REGION
+- AWS_ENDPOINT (for example fra1.digitaloceanspaces.com)
 - AWS_SECRET_ACCESS_KEY
 - AWS_S3_BUCKET_NAME
 - POSTGRES_PASSWORD
