@@ -12,6 +12,7 @@ module.exports = {
       host: process.env.POSTGRES_HOST,
       port: process.env.POSTGRES_PORT,
       ssl: {
+        rejectUnauthorized: true,
         ca: fs.readFileSync('./ca-certificate.crt').toString()
       }
     },
@@ -31,6 +32,7 @@ module.exports = {
       host: process.env.POSTGRES_HOST,
       port: process.env.POSTGRES_PORT,
       ssl: {
+        rejectUnauthorized: true,
         ca: fs.readFileSync('./ca-certificate.crt').toString()
       }
     },
@@ -50,6 +52,7 @@ module.exports = {
       host: process.env.POSTGRES_HOST,
       port: process.env.POSTGRES_PORT,
       ssl: {
+        rejectUnauthorized: true,
         ca: fs.readFileSync('./ca-certificate.crt').toString()
       }
     },
