@@ -42,7 +42,22 @@ function getMyProjects(user_id) {
 }
 
 function search(query) {
-    return knex.raw(`SELECT id, title FROM project WHERE banned = false AND to_tsvector(title || ' ' || description) @@ to_tsquery(?) LIMIT 20`, [query]);
+    return knex('project')
+        .where({
+            banned: false
+        })
+        .whereRaw("to_tsvector(title || ' ' || description) @@ plainto_tsquery(?)", [query])
+        .limit(20);
+}
+
+function searchByUser(query, user_id) {
+    return knex('project')
+        .where({
+            created_by: user_id,
+            banned: false
+        })
+        .whereRaw("to_tsvector(title || ' ' || description) @@ plainto_tsquery(?)", [query])
+        .limit(20);
 }
 
 module.exports = {
@@ -51,5 +66,6 @@ module.exports = {
     getProject: getProject,
     getProjects: getProjects,
     getMyProjects: getMyProjects,
-    search
+    search,
+    searchByUser
 };
