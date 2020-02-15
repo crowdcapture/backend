@@ -4,9 +4,10 @@ const path = require('path');
 const fs = require('fs');
 const AWS = require('aws-sdk');
 const uuid = require('uuid');
-const uuidUtil = require('../util/uuid');
 const probe = require('probe-image-size');
+const randomString = require('crypto-random-string');
 
+const uuidUtil = require('../util/uuid');
 const hashUtil = require('../util/hash');
 const queries = require('../../db/queries/project');
 const imageQueries = require('../../db/queries/image');
@@ -141,7 +142,7 @@ async function uploadImageS3(fileObject, project_id) {
                 secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
             });
 
-            const filename = crypto.randomBytes(Math.ceil(16 * 0.75)).toString('base64').slice(0, 16);
+            const filename = randomString({length: 16, characters: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'});
             const file = fs.createReadStream(fileObject.path);
 
             const params = {
@@ -155,7 +156,7 @@ async function uploadImageS3(fileObject, project_id) {
                 if (err) {
                     reject({ success: false, message: 'There was a problem with S3 Upload' });
                 } else {
-                    data.filename = filename;
+                    data.filename = `${filename}${path.extname(fileObject.path).toLowerCase()}`;
 
                     resolve(data);
                 }
