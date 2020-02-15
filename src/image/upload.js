@@ -73,7 +73,8 @@ async function uploadAllImages(req) {
     return new Promise(async (resolve, reject) => {
         try {
             const form = new multiparty.Form({
-                maxFields: 100
+                maxFields: 1,
+                maxFilesSize: 25000000 // 25 mb
             });
 
             const images = [];
