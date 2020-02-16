@@ -5,7 +5,7 @@ exports.up = async function(knex) {
 
 exports.down = async function(knex) {
     await knex.schema.alterTable('project', (table) => {
-        table.dropIndex('project_idx_title');
-        table.dropIndex('project_idx_description');
+        table.dropIndex('title', 'project_idx_title');
+        table.dropIndex('description', 'project_idx_description');
     });
 };
