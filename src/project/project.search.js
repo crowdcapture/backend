@@ -17,7 +17,7 @@ async function search(req, res, next) {
         res.status(200);
         res.send({
             success: true,
-            result: result.rows || []
+            result: result
         });
     } catch (error) {
         next(error);
