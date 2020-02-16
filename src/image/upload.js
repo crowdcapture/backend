@@ -1,11 +1,11 @@
 const multiparty = require('multiparty');
-const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
 const AWS = require('aws-sdk');
 const uuid = require('uuid');
 const probe = require('probe-image-size');
 const randomString = require('crypto-random-string');
+const sharp = require('sharp');
 
 const uuidUtil = require('../util/uuid');
 const hashUtil = require('../util/hash');
@@ -32,6 +32,7 @@ async function upload(req, res, next) {
                 id: uuid.v4(),
                 filename: image.filename,
                 url: `https://${process.env.AWS_S3_BUCKET_NAME}.${process.env.AWS_ENDPOINT}/${image.Key}`,
+                urlSmall: `https://${process.env.AWS_S3_BUCKET_NAME}.${process.env.AWS_ENDPOINT}/${image.keySmall}`,
                 project: req.params.id,
                 created: new Date(),
                 created_by: req.user.id,
@@ -39,7 +40,9 @@ async function upload(req, res, next) {
                 banned: false,
                 validated: false,
                 height: image.height,
-                width: image.width
+                width: image.width,
+                heightSmall: image.heightSmall,
+                widthSmall: image.widthSmall
             }
         });
 
@@ -100,7 +103,7 @@ async function uploadAllImages(req) {
                         reject({ success: false, status: 400, message: 'This image was already uploaded to this project.'});
                     }
 
-                    const response = await uploadImageS3(file, req.params.id);
+                    const response = await prepareImages(file, req.params.id);
                     const imageProperties = await getImageProperties(file.path);
 
                     response.sha_256 = sha_256;
@@ -132,22 +135,76 @@ async function getImageProperties(filePath) {
     });
 }
 
-async function uploadImageS3(fileObject, project_id) {
+async function prepareImages(fileObject, project_id) {
     return new Promise(async (resolve, reject) => {
         try {
+            const filename = randomString({length: 16, characters: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'});
+            const fileExt = `${filename}${path.extname(fileObject.path).toLowerCase()}`;
+            let key = `${project_id}/original/${fileExt}`;
+
+            // Upload original big image
+            const data = await uploadImageToS3(fileObject.path, fileExt, key);
+            const small = await resizeImage(fileObject.path, fileExt);
+            
+            key = `${project_id}/small/${fileExt}`;
+
+            data.widthSmall = small.widthSmall;
+            data.heightSmall = small.heightSmall;
+            data.keySmall = key;
+
+            await uploadImageToS3(`temp/${fileExt}`, fileExt, key);
+
+            // Remove temp image after uploading
+            fs.unlink(`temp/${fileExt}`, (error) => {
+                if (error) {
+                    reject({ success: false, message: 'Removing file did not work.'});
+                }
+
+                return;
+            });
+
+            resolve(data);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+async function resizeImage(filepath, fileExt) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const file = await sharp(filepath)
+                .resize(null, 250)
+                .toFile(`temp/${fileExt}`);
+
+            const data = {
+                widthSmall: file.width,
+                heightSmall: file.height
+            }
+
+            resolve(data);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+async function uploadImageToS3(filepath, filename, key) {
+    return new Promise((resolve, reject) => {
+        try {
             const endpoint = new AWS.Endpoint(process.env.AWS_ENDPOINT);
+
             const S3 = new AWS.S3({
                 endpoint: endpoint,
                 accessKeyId: process.env.AWS_ACCESS_KEY_ID,
                 secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
             });
 
-            const filename = randomString({length: 16, characters: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'});
-            const file = fs.createReadStream(fileObject.path);
+            const file = fs.createReadStream(filepath);
 
             const params = {
                 Bucket: process.env.AWS_S3_BUCKET_NAME,
-                Key: `${project_id}/${filename}${path.extname(fileObject.path).toLowerCase()}`,
+                Key: key,
                 Body: file,
                 ACL: 'public-read'
             };
@@ -156,7 +213,7 @@ async function uploadImageS3(fileObject, project_id) {
                 if (err) {
                     reject({ success: false, message: 'There was a problem with S3 Upload' });
                 } else {
-                    data.filename = `${filename}${path.extname(fileObject.path).toLowerCase()}`;
+                    data.filename = filename;
 
                     resolve(data);
                 }
