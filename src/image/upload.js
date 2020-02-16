@@ -174,6 +174,7 @@ async function resizeImage(filepath, fileExt) {
     return new Promise(async (resolve, reject) => {
         try {
             const file = await sharp(filepath)
+                .withMetadata()
                 .resize(null, 700)
                 .toFile(`temp/${fileExt}`);
 
