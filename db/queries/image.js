@@ -34,6 +34,28 @@ function getImagesValidated(project_id) {
         });
 }
 
+function getImagesUnvalidated(project_id) {
+    return knex('image')
+        .where({
+            project: project_id,
+            banned: false,
+            validated: false
+        })
+        .andWhereRaw("(validating IS NULL OR validating < NOW() - INTERVAL '15 minutes')")
+        .orderBy('created')
+        .limit(1);
+}
+
+function imageIsValidating(image_id) {
+    return knex('image')
+        .where({
+            id: image_id
+        })
+        .update({
+            validating: new Date()
+        });
+}
+
 function getImagesTotal(project_id) {
     return knex('image')
         .count()
@@ -45,9 +67,11 @@ function getImagesTotal(project_id) {
 
 module.exports = {
     insertImages,
+    imageIsValidating,
     getImage,
     getImageBySHA,
     getImages,
     getImagesTotal,
-    getImagesValidated
+    getImagesValidated,
+    getImagesUnvalidated
 }

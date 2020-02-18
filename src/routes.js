@@ -10,6 +10,7 @@ const projectsGetMy = require('./project/projects.my.get');
 const images = require('./image/images.get');
 const upload = require('./image/upload');
 const validate = require('./image/validate');
+const validateGet = require('./image/validate.get');
 const reasonsGet = require('./image/reason.get');
 const login = require('./user/login');
 const logout = require('./user/logout');
@@ -82,6 +83,10 @@ router.get('/projects/my', auth, (req, res, next) => {
 
 router.post('/project', auth, (req, res, next) => {
     projectCreate(req, res, next);
+});
+
+router.get('/image/:projectId/validate', auth, (req, res, next) => {
+    validateGet(req, res, next);
 });
 
 router.post('/image/:id/validate', auth, (req, res, next) => {
