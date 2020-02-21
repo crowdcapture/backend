@@ -19,16 +19,16 @@ async function getImages(req, res, next) {
             throw({ success: false, status: 400, message: 'This id does not seem to exist' });
         }
 
-        let [imagesValidated, imagesTotal, images] = await Promise.all([
+        let [imagesValidated, imagesWaiting, images] = await Promise.all([
             await queries.getImagesValidated(req.params.id),
-            await queries.getImagesTotal(req.params.id),
+            await queries.getImagesWaiting(req.params.id),
             await queries.getImages(req.params.id)
         ]);
 
         res.status(200);
         res.send({
             success: true,
-            imagesTotal: imagesTotal[0].count,
+            imagesWaiting: imagesWaiting[0].count,
             imagesValidated: imagesValidated[0].count,
             images: images.rows
         });

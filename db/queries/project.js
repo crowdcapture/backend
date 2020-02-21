@@ -15,7 +15,7 @@ function updateProject(project, project_id) {
 }
 
 function getProject(project_id) {
-    return knex.select('project.id', 'image_count', 'latest_bundle_url', 'title', 'description', 'minWidth', 'minHeight', 'created_by', 'user.username').from('project')
+    return knex.select('project.id', 'image_count', 'latest_bundle_url', 'title', 'description', 'instruction', 'minWidth', 'minHeight', 'created_by', 'user.username').from('project')
         .where({
             'project.id': project_id
         })

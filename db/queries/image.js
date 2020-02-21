@@ -13,7 +13,7 @@ function getImage(image_id) {
 }
 
 function getImages(project_id) {
-    return knex.raw(`SELECT id, filename, url, "urlSmall", "widthSmall", "heightSmall" FROM image WHERE "project" = ? AND "banned" = false AND "validated" = true ORDER BY random() limit 15;`, [project_id]);
+    return knex.raw(`SELECT id, filename, url, "urlSmall", "widthSmall", "heightSmall" FROM image WHERE "project" = ? AND "banned" = false AND "validated" = true AND "approved" = true ORDER BY random() limit 15;`, [project_id]);
 }
 
 function getImageBySHA(sha_256, project_id) {
@@ -30,16 +30,30 @@ function getImagesValidated(project_id) {
         .where({
             project: project_id,
             banned: false,
-            validated: true
+            validated: true,
+            approved: true
         });
 }
 
-function getImagesUnvalidated(project_id) {
+function getImagesWaiting(project_id) {
+    return knex('image')
+        .count()
+        .where({
+            project: project_id,
+            banned: false,
+            validated: false
+        });
+}
+
+function getImagesUnvalidated(project_id, user_id) {
     return knex('image')
         .where({
             project: project_id,
             banned: false,
             validated: false
+        })
+        .whereNot({
+            created_by: user_id
         })
         .andWhereRaw("(validating IS NULL OR validating < NOW() - INTERVAL '15 minutes')")
         .orderBy('created')
@@ -56,22 +70,13 @@ function imageIsValidating(image_id) {
         });
 }
 
-function getImagesTotal(project_id) {
-    return knex('image')
-        .count()
-        .where({
-            banned: false,
-            project: project_id
-        });
-}
-
 module.exports = {
     insertImages,
     imageIsValidating,
     getImage,
     getImageBySHA,
     getImages,
-    getImagesTotal,
+    getImagesWaiting,
     getImagesValidated,
     getImagesUnvalidated
 }

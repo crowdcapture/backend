@@ -31,7 +31,7 @@ async function validate(req, res, next) {
             const reason = await queries.getRejectionReason(req.body.rejection_reason);
     
             if (reason.length === 0) {
-                throw({ success: false, status: 400, message: 'This id does not seem to exist' });
+                throw({ success: false, status: 400, message: 'This reason id does not seem to exist' });
             }
         }
 
@@ -47,6 +47,7 @@ async function validate(req, res, next) {
 
         const imageInfo = {
             validated: true,
+            approved: !req.body.rejected,
             validated_on: new Date(),
             validating: null
         }
