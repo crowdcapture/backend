@@ -140,28 +140,44 @@ async function prepareImages(fileObject, project_id) {
         try {
             const filename = randomString({length: 16, characters: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'});
             const fileExt = `${filename}${path.extname(fileObject.path).toLowerCase()}`;
+            const rotated = await rotateImage(fileObject.path, fileExt);
+
             let key = `${project_id}/original/${fileExt}`;
 
             // Upload original big image
-            const data = await uploadImageToS3(fileObject.path, fileExt, key);
+            const data = await uploadImageToS3(`temp/${fileExt}`, fileExt, key);
+
+            // Create a thumbnail of the original image
             const small = await resizeImage(fileObject.path, fileExt);
-            
             key = `${project_id}/small/${fileExt}`;
 
+            data.width = rotated.width;
+            data.height = rotated.height;
             data.widthSmall = small.widthSmall;
             data.heightSmall = small.heightSmall;
             data.keySmall = key;
 
+            // Upload smaller image
             await uploadImageToS3(`temp/${fileExt}`, fileExt, key);
 
-            // Remove temp image after uploading
-            fs.unlink(`temp/${fileExt}`, (error) => {
-                if (error) {
-                    reject({ success: false, message: 'Removing file did not work.'});
-                }
+            resolve(data);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
 
-                return;
-            });
+async function rotateImage(filepath, fileExt) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const file = await sharp(filepath)
+                .rotate()
+                .toFile(`temp/${fileExt}`);
+
+            const data = {
+                width: file.width,
+                height: file.height
+            }
 
             resolve(data);
         } catch (error) {
@@ -174,7 +190,7 @@ async function resizeImage(filepath, fileExt) {
     return new Promise(async (resolve, reject) => {
         try {
             const file = await sharp(filepath)
-                .withMetadata()
+                .rotate()
                 .resize(null, 700)
                 .toFile(`temp/${fileExt}`);
 
@@ -190,7 +206,7 @@ async function resizeImage(filepath, fileExt) {
     });
 }
 
-async function uploadImageToS3(filepath, filename, key) {
+async function uploadImageToS3(filepath, fileExt, key) {
     return new Promise((resolve, reject) => {
         try {
             const endpoint = new AWS.Endpoint(process.env.AWS_ENDPOINT);
@@ -214,7 +230,16 @@ async function uploadImageToS3(filepath, filename, key) {
                 if (err) {
                     reject({ success: false, message: 'There was a problem with S3 Upload' });
                 } else {
-                    data.filename = filename;
+                    data.filename = fileExt;
+
+                    // Remove temp image after uploading
+                    fs.unlink(filepath, (error) => {
+                        if (error) {
+                            reject({ success: false, message: 'Removing file did not work.'});
+                        }
+
+                        return;
+                    });
 
                     resolve(data);
                 }
