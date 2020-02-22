@@ -14,6 +14,13 @@ function updateProject(project, project_id) {
         .update(project);
 }
 
+function getPopularProjects() {
+    return knex.select('id', 'title', 'image_count').from('project')
+        .where({
+            popular: true
+        });
+}
+
 function getProject(project_id) {
     return knex.select('project.id', 'image_count', 'latest_bundle_url', 'title', 'description', 'instruction', 'minWidth', 'minHeight', 'created_by', 'user.username').from('project')
         .where({
@@ -66,6 +73,7 @@ module.exports = {
     getProject: getProject,
     getProjects: getProjects,
     getMyProjects: getMyProjects,
+    getPopularProjects: getPopularProjects,
     search,
     searchByUser
 };
