@@ -8,12 +8,20 @@ async function updateProject(req, res, next) {
             throw({ success: false, status: 400, message: 'Some required properties where not set' });
         }
 
-        if (!uuidUtil.uuidValidator(req.params.id)) {
+        if (!uuidUtil.uuidValidator(req.body.id)) {
             throw({ success: false, status: 400, message: 'ID should be a valid UUID.' });
         }
 
         if (req.body.title.length > 64) {
             throw({ success: false, status: 400, message: 'The maximum length of the project title is 64 characters.' });
+        }
+
+        if (req.body.description.length > 1000) {
+            throw { success: false, message: 'The maximum length of the project description is 3500 characters.' };
+        }
+
+        if (req.body.instruction.length > 500) {
+            throw { success: false, message: 'The maximum length of the project instruction is 500 characters.' };
         }
 
         const existingProject = await queries.getProject(req.body.id);
@@ -26,16 +34,17 @@ async function updateProject(req, res, next) {
             throw({ success: false, status: 400, message: 'You do not have permission to change this project.' });
         }
 
-        const project = existingProject[0];
+        const update = {
+            title: req.body.title,
+            description: req.body.description,
+            instruction: req.body.instruction,
+            updated: new Date()
+        };
 
-        project.title = req.body.title;
-        project.description = req.body.description;
-        project.instruction = req.body.instruction;
-        project.updated = new Date();
+        await queries.updateProject(update, req.body.id);
 
-        await queries.updateProject(project, req.body.id);
-        
-        cache.put(project.id, project, 300000);
+        const project = await queries.getProject(req.body.id);
+        cache.put(req.body.id, project, 300000);
 
         res.status(200);
         res.send({

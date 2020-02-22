@@ -18,7 +18,7 @@ async function createProject(req, res, next) {
         }
 
         if (req.body.instruction.length > 500) {
-            throw { success: false, message: 'The maximum length of the project description is 500 characters.' };
+            throw { success: false, message: 'The maximum length of the project instruction is 500 characters.' };
         }
 
         const project = {
