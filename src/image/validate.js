@@ -1,6 +1,7 @@
 const uuid = require('uuid');
 const uuidUtil = require('../util/uuid');
 const imageQueries = require('../../db/queries/image');
+const projectQueries = require('../../db/queries/project');
 const queries = require('../../db/queries/validation');
 
 async function validate(req, res, next) {
@@ -33,6 +34,13 @@ async function validate(req, res, next) {
             if (reason.length === 0) {
                 throw({ success: false, status: 400, message: 'This reason id does not seem to exist' });
             }
+
+            // Adjust count to not include rejected images
+            const project = await projectQueries.getProject(image[0].project);
+
+            await projectQueries.updateProject({
+                image_count: project[0].image_count - 1
+            }, project[0].id);
         }
 
         const validation = {
