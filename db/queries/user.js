@@ -10,6 +10,20 @@ function getEmail(email) {
         .where({email: email});
 }
 
+function getUserProjects(user_id) {
+    return knex.select('id', 'image_count', 'title').from('project')
+        .where({
+            created_by: user_id
+        });
+}
+
+function getUserInfo(user_id) {
+    return knex.select('id', 'username', 'created').from('user')
+        .where({
+            id: user_id
+        });
+}
+
 function getUserWithId(user_id) {
     return knex('user')
         .where({id: user_id});
@@ -68,6 +82,8 @@ module.exports = {
     getEmail,
     getUserWithId,
     getUserWithToken,
+    getUserInfo,
+    getUserProjects,
     insertUser,
     insertUserValidation,
     insertToken,

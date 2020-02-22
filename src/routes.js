@@ -11,6 +11,7 @@ const projectsGetMy = require('./project/projects.my.get');
 const images = require('./image/images.get');
 const upload = require('./image/upload');
 const validate = require('./image/validate');
+const user = require('./user/user.get');
 const validateGet = require('./image/validate.get');
 const reasonsGet = require('./image/reason.get');
 const login = require('./user/login');
@@ -67,6 +68,10 @@ router.get('/reasons', (req, res, next) => {
 
 router.post('/search', (req, res, next) => {
     search(req, res, next);
+});
+
+router.get('/user/:id', (req, res, next) => {
+    user(req, res, next);
 });
 
 // Authenticated routes
