@@ -18,8 +18,13 @@ app.use(sentry.Handlers.requestHandler());
 const port = process.env.PORT || 5000;
 const routes = require('./routes');
 
+const corsOptions = {
+  origin: '*',
+  optionsSuccessStatus: 200,
+}
+
 // configure bodyParser
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
