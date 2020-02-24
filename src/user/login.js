@@ -85,7 +85,6 @@ async function checkPassword(user, password) {
             const hashedPass = await hashUtil.comparePassword(password, user[0].password);
 
             if (!hashedPass) {
-                await queries.insertFailedTry(user[0].id);
                 reject({ status: 400, success: false, errorCode: 1009, message: 'This combination between password and e-mailadress was not found.'});
             }
 
