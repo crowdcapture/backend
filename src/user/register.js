@@ -8,12 +8,15 @@ const hashUtil = require('../util/hash');
 
 async function register(req, res, next) {
     try {
-        await security(req.body.email, req.body.username, req.body.password);
+        const email = req.body.email.toLowerCase().trim();
+        const username = req.body.username.trim();
 
-        await checkUsernameFormat(req.body.username);
-        await checkUsername(req.body.username);
-        await checkEmail(req.body.email);
-        const user = await insertUser(req.body.email, req.body.username, req.body.password);
+        await security(email, username, req.body.password);
+        await checkUsernameFormat(username);
+        await checkUsername(username);
+        await checkEmail(email);
+
+        const user = await insertUser(email, username, req.body.password);
         
         res.status(200);
         res.send({

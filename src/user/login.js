@@ -6,9 +6,11 @@ const hashUtil = require('../util/hash');
 
 async function login(req, res, next) {
     try {
-        await security(req.body.email, req.body.password);
-        const user = await queries.getEmail(req.body.email);
-        
+        const email = req.body.email.toLowerCase().trim();
+
+        await security(email, req.body.password);
+        const user = await queries.getEmail(email);
+
         await checkEmail(user);
         await checkUserStatus(user);
         await checkPassword(user, req.body.password);
@@ -22,6 +24,8 @@ async function login(req, res, next) {
             token: token
         });
     } catch (error) {
+        console.log(error);
+        
         next(error);
     }
 }
@@ -72,7 +76,6 @@ async function checkUserStatus(user) {
             } else if (user[0] && user[0].banned) {
                 reject({status: 400, success: false, errorCode: 1004, message: 'This account is not active, contact customer service.'});
             }
-            
         } catch (error) {
             reject(error);
         }
