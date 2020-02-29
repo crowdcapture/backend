@@ -21,6 +21,7 @@ const confirmation = require('./user/confirmation');
 const reset = require('./user/reset');
 const password = require('./user/password');
 const search = require('./project/project.search');
+const flip = require('./image/flip');
 
 router.get('/test', (req, res, next) => {
     res.send('Your test request was noted and discarded.');
@@ -101,6 +102,10 @@ router.get('/image/:projectId/validate', auth, (req, res, next) => {
 
 router.post('/image/:id/validate', auth, (req, res, next) => {
     validate(req, res, next);
+});
+
+router.get('/image/:id/flip', auth, (req, res, next) => {
+    flip(req, res, next);
 });
 
 // All other routes get 404.

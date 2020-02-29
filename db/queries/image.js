@@ -70,6 +70,12 @@ function imageIsValidating(image_id) {
         });
 }
 
+function updateImage(image, image_id) {
+    return knex('image')
+        .where({id: image_id})
+        .update(image);
+}
+
 module.exports = {
     insertImages,
     imageIsValidating,
@@ -78,5 +84,6 @@ module.exports = {
     getImages,
     getImagesWaiting,
     getImagesValidated,
-    getImagesUnvalidated
+    getImagesUnvalidated,
+    updateImage
 }
