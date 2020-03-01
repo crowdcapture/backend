@@ -4,9 +4,9 @@ const fs = require('fs');
 const AWS = require('aws-sdk');
 const uuid = require('uuid');
 const probe = require('probe-image-size');
-const randomString = require('crypto-random-string');
 const sharp = require('sharp');
 
+const random = require('../util/random');
 const uuidUtil = require('../util/uuid');
 const hashUtil = require('../util/hash');
 const queries = require('../../db/queries/project');
@@ -42,7 +42,8 @@ async function upload(req, res, next) {
                 height: image.height,
                 width: image.width,
                 heightSmall: image.heightSmall,
-                widthSmall: image.widthSmall
+                widthSmall: image.widthSmall,
+                hash: random.createRandom(4)
             }
         });
 
@@ -138,7 +139,7 @@ async function getImageProperties(filePath) {
 async function prepareImages(fileObject, project_id) {
     return new Promise(async (resolve, reject) => {
         try {
-            const filename = randomString({length: 16, characters: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'});
+            const filename = random.createRandom(16);
             const fileExt = `${filename}${path.extname(fileObject.path).toLowerCase()}`;
             const rotated = await rotateImage(fileObject.path, fileExt);
 

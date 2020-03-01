@@ -1,4 +1,5 @@
 const uuidUtil = require('../util/uuid');
+const random = require('../util/random');
 const sharp = require('sharp');
 const fetch = require('node-fetch');
 const queries = require('../../db/queries/image');
@@ -33,6 +34,7 @@ async function flip(req, res, next) {
         const dataSmall = await rotateImage(`temp/t-${filename}`, filename, true);
         data.heightSmall = dataSmall.height;
         data.widthSmall = dataSmall.width;
+        data.hash = random.createRandom(4);
         await uploadImageToS3(`temp/${filename}`, filename, `${image[0].project}/small/${filename}`);
 
         await cleanup(`temp/${filename}`, filename);
