@@ -1,5 +1,3 @@
-// process.env.NODE_ENV = 'development';
-
 const dotenv = require('dotenv');
 const express = require('express');
 const app = express();
@@ -19,7 +17,7 @@ const port = process.env.PORT || 5000;
 const routes = require('./routes');
 
 const corsOptions = {
-  origin: '*',
+  origin: process.env.NODE_ENV === 'development' ? '*' : 'https://crowdcapture.org',
   optionsSuccessStatus: 200,
 }
 
