@@ -105,7 +105,7 @@ async function insertToken(user) {
                 id: user[0].id,
                 email: user[0].email
             }, process.env.JWT_SECRET, {
-                expiresIn: '1d'
+                expiresIn: '5d'
             });
 
             await queries.insertToken(user[0].id, jwt);
