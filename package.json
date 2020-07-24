@@ -11,8 +11,8 @@
   },
   "author": "Pieter van Mill",
   "dependencies": {
-    "@sentry/node": "^5.18.1",
-    "aws-sdk": "^2.705.0",
+    "@sentry/node": "^5.20.0",
+    "aws-sdk": "^2.719.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
@@ -29,7 +29,7 @@
     "pg": "^7.18.2",
     "probe-image-size": "^5.0.0",
     "request": "^2.88.2",
-    "request-promise-native": "^1.0.8",
+    "request-promise-native": "^1.0.9",
     "rimraf": "^3.0.2",
     "sharp": "^0.24.1",
     "uuid": "^3.4.0"
