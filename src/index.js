@@ -4,6 +4,7 @@ const app = express();
 const sentry = require('@sentry/node');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const rateLimit = require('express-rate-limit');
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
@@ -25,6 +26,13 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+const limiter = new rateLimit({
+  windowMs: 60 * 1000,
+  max: 6
+});
+
+app.use(limiter);
 
 // Disable standard Express header for security purposes
 app.disable('x-powered-by');
