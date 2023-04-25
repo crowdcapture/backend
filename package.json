@@ -12,7 +12,7 @@
   "author": "Pieter van Mill",
   "dependencies": {
     "@sentry/node": "^5.30.0",
-    "aws-sdk": "^2.875.0",
+    "aws-sdk": "^2.1354.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
