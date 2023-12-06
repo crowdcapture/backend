@@ -22,7 +22,7 @@
     "express": "^4.17.1",
     "express-rate-limit": "^5.2.6",
     "jsonwebtoken": "^8.5.1",
-    "knex": "^0.20.15",
+    "knex": "^0.21.13",
     "memory-cache": "^0.2.0",
     "multiparty": "^4.2.2",
     "node-fetch": "^2.6.1",
