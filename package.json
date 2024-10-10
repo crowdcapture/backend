@@ -11,7 +11,7 @@
   },
   "author": "Pieter van Mill",
   "dependencies": {
-    "@sentry/node": "^5.30.0",
+    "@sentry/node": "^7.75.0",
     "aws-sdk": "^2.875.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
@@ -19,7 +19,7 @@
     "crypto-random-string": "^3.3.1",
     "dotenv": "^8.2.0",
     "email-validator": "^2.0.4",
-    "express": "^4.17.1",
+    "express": "^4.21.1",
     "express-rate-limit": "^5.2.6",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.20.15",
